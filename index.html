@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Bin & Hex Counter</title>
+   <style>
+      /*Default settings*/
+      * {
+         box-sizing: border-box;
+         margin: 0;
+         padding: 0;
+      }
+
+      body {
+         background-color: #1d1e4e;
+         color: rgb(26, 185, 26);
+      }
+
+      span {
+         font-size: 2rem;
+      }
+
+      /*Header*/
+      #header {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+      }
+      #header .container {
+         text-align: center;
+         border: 2px solid rgb(26, 185, 26);
+         width: 60%;
+         border-radius: 10px;
+         margin-top: 2rem;
+         box-shadow: 0 0 40px rgb(26, 185, 26), inset 0 0 80px rgb(26, 185, 26);
+      }
+      #header .container  h1 {
+         margin: 2rem auto;
+         text-shadow: 0 0 10px rgb(26, 185, 26);
+      }
+
+      /*Content*/
+      #content .container .decimalis-szamok {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         margin-top: 3rem;
+      }
+
+      #content .container .decimalis-szamok .kor {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+      }
+
+      #content .container .hexa-szam {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         margin-top: 100px;
+      }
+
+      #content .container .hexa-szam div {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+      }
+
+      #content .container .hexa-szam div span {
+         font-size: 4rem;
+      }
+
+      /*Footer*/
+      #footer .copyright {
+         border: 2px solidrgb(26, 185, 26);
+         width: 220px;
+         height: 50px;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         border-radius: 10px;
+         position: absolute;
+         right: 10px;
+         bottom: 10px;
+      }
+
+      #footer .copyright p {
+         font-size: 1.2rem;
+      }
+
+      /*Utilities*/
+      .kor {
+         border-radius: 50%;
+         width: 100px;
+         height: 100px;
+         border: 3px solid rgb(26, 185, 26);
+         margin: 0 0.6rem;
+      }
+
+      .color {
+         box-shadow: inset 0 0 60px rgb(128, 11, 206), 0 0 50px rgb(26, 185, 26);
+         font-weight: bold;
+      }
+   </style>
+</head>
+<body>
+   <header id="header">
+      <div class="container">
+         <h1>Bin & Hex Counter</h1>
+      </div>
+   </header>
+   <section id="content">
+      <div class="container">
+         <div class="decimalis-szamok">
+            <div class="kor decimalis-szam">
+               <span>128</span>
+            </div>
+            <div class="kor decimalis-szam">
+               <span>64</span>
+            </div>
+            <div class="kor decimalis-szam">
+               <span>32</span>
+            </div>
+            <div class="kor decimalis-szam">
+               <span>16</span>
+            </div>
+            <div class="kor decimalis-szam">
+               <span>8</span>
+            </div>
+            <div class="kor decimalis-szam">
+               <span>4</span>
+            </div>
+            <div class="kor decimalis-szam">
+               <span>2</span>
+            </div>
+            <div class="kor decimalis-szam">
+               <span>1</span>
+            </div>
+         </div>
+         <div class="hexa-szam">
+            <div class="kor hexa-szam color">
+               <span></span>
+            </div>
+            <div class="kor hexa-szam color">
+               <span>0</span>
+            </div>
+         </div>
+      </div>
+   </section>
+   <footer id="footer">
+      <div class="copyright">
+         <p>&copy; 2020 Földes Dániel</p>
+      </div>
+   </footer>
+   <script>
+      const decimalisSzamokKor = document.querySelectorAll(".decimalis-szam");
+      const decimalisSzamok = document.querySelectorAll(".decimalis-szam span");
+      const hexaSzamokKor = document.querySelectorAll(".hexa-szam");
+      const hexaSzamok = document.querySelectorAll(".hexa-szam span");
+      let jelenlegi = 0;
+      let dict = {10 : "A", 11 : "B", 12 : "C", 13 : "D", 14 : "E", 15 : "F"};
+      let timer = setInterval(Atvalt, 1000);
+
+      function Atvalt() {
+         if(jelenlegi == 256) {
+            clearInterval(timer);
+            return;
+         }
+         else {
+            DecimalisSzamolas();
+            HexSzamolas();
+         }
+      }
+
+      function  DecimalisSzamolas() {
+         DecimalisReset();
+         let curr_jelenlegi = jelenlegi;
+         let end = false;
+         decimalisSzamok.forEach(function(item, index) {
+            const decimalisSzam = parseInt(item.innerHTML);
+            if(decimalisSzam <= curr_jelenlegi && !end) {
+               decimalisSzamokKor[index].classList.add("color");
+               curr_jelenlegi -= decimalisSzam;
+            }
+            if(curr_jelenlegi == 0 && !end) {
+               jelenlegi++;
+               end = true;
+            }
+         });
+      }
+
+      function DecimalisReset() {
+         decimalisSzamokKor.forEach(item => item.classList.remove("color"));
+      }
+
+      function HexSzamolas() {
+         let eredmeny = "";
+         let end = false;
+         let curr_jelenlegi = jelenlegi - 1;
+         while(!end) {
+            if(curr_jelenlegi < 16) {
+               if(curr_jelenlegi >= 10) {
+                  eredmeny += dict[curr_jelenlegi];
+               }
+               else eredmeny += curr_jelenlegi.toString();
+               end = true;
+               break;
+            }
+            let maradek = curr_jelenlegi % 16;
+            curr_jelenlegi = Math.floor(curr_jelenlegi / 16);
+            if(maradek >= 10) {
+               eredmeny += dict[maradek];
+            }
+            else eredmeny += maradek.toString();
+         }
+         if(eredmeny.length == 2) {
+            hexaSzamok[0].innerHTML = eredmeny[1];
+            hexaSzamok[1].innerHTML = eredmeny[0];
+         }
+         else {
+            hexaSzamok[0].innerHTML = '';
+            hexaSzamok[1].innerHTML = eredmeny;
+         }
+      }
+
+      //Átváltás
+      //https://www.inf.u-szeged.hu/~vargalg/oktatas/assembly_18t/tananyag/tvltsok.html
+   </script>
+</body>
+</html>
